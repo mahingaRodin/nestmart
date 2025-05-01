@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import databaseConfig from './config/database.config';
+import { AuthModule } from "./modules/auth/auth.module";
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import databaseConfig from './config/database.config';
         synchronize: configService.get('database.synchronize'),
       }),
     }),
-    // Feature modules will go here
+    AuthModule,
   ],
 })
 export class AppModule {}
