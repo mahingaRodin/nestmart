@@ -5,6 +5,7 @@ import databaseConfig from './config/database.config';
 import { AuthModule } from "./modules/auth/auth.module";
 import { CategoriesModule } from "./modules/categories/categories.module";
 import { ProductsModule } from "./modules/products/products.modules";
+import { SeedModule } from "./seed/seed.module";
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { ProductsModule } from "./modules/products/products.modules";
     }),
     AuthModule,
     CategoriesModule,
-    ProductsModule
+    ProductsModule,
+    SeedModule
   ],
 })
 export class AppModule {}
