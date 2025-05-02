@@ -36,7 +36,7 @@ export class Category {
   children: Category[];
 
   @TreeParent()
-  parent: Category;
+  parent: Category | null;
 
   @ManyToMany(() => Product, (product) => product.categories)
   products: Product[];
