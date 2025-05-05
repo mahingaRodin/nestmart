@@ -1,4 +1,3 @@
-// src/seed/seed.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -15,7 +14,7 @@ export class SeedService {
   async seedAdmin(): Promise<{ message: string }> {
     // Check if admin already exists
     const adminExists = await this.userRepository.findOne({
-      where: { email: 'rodinmahinga@gmail.com' },
+      where: { email: 'mahingarodin@gmail.com' },
     });
 
     if (adminExists) {
@@ -23,13 +22,13 @@ export class SeedService {
     }
 
     // Create admin user
-    const hashedPassword = await bcrypt.hash('Admin123!', 10);
+    const hashedPassword = await bcrypt.hash('Admin123!', 12);
 
     const admin = this.userRepository.create({
-      email: 'rodinmahinga@gmail.com',
+      email: 'mahingarodin@gmail.com',
       password: hashedPassword,
-      firstName: 'Rodin',
-      lastName: 'Admin',
+      firstName: 'Mahinga',
+      lastName: 'Rodin',
       role: UserRole.ADMIN,
       isActive: true,
     });
