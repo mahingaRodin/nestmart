@@ -9,41 +9,42 @@ import { Repository } from 'typeorm';
 import { User } from '../../database/entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { access } from "fs";
-import { LoginResponseDto } from "./dto/login-response.dto";
-
+import { access } from 'fs';
+import { LoginResponseDto } from './dto/login-response.dto';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
-    private userRepsository: Repository<User>,
+    private userRepository: Repository<User>,
     private jwtService: JwtService,
   ) {}
 
   async register(registerDto: RegisterDto): Promise<User> {
     const { email } = registerDto;
-    const userExists = await this.userRepsository.findOne({
+    const userExists = await this.userRepository.findOne({
       where: { email },
     });
 
     if (userExists) {
       throw new ConflictException('User with this email already exists!');
     }
-
-    const user = this.userRepsository.create(registerDto);
-    await this.userRepsository.save(user);
-
-    // //remove sensitive info
-    // delete user.password;
+    const hashedPass = await bcrypt.hash(registerDto.password, 12);
+    const user = this.userRepository.create({
+      ...registerDto,
+      password: hashedPass,
+    });
+    await this.userRepository.save(user);
 
     return user;
   }
 
   async validateUser(email: string, password: string) {
-    const user = await this.userRepsository.findOne({ where: { email } });
+    const user = await this.userRepository.findOne({ where: { email } });
 
-    if (user && (await user.validatePassword(password))) {
+    if (user && (await bcrypt.compare(password, user.password))) {
+      // Remove password before returning
       const { password, ...result } = user;
       return result;
     }
@@ -51,22 +52,26 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto): Promise<LoginResponseDto> {
-    const user = await this.validateUser(loginDto.email, loginDto.password);
+    const user = await this.userRepository.findOne({
+      where: { email: loginDto.email },
+    });
 
-    if (!user) {
+    if (!user || !(await bcrypt.compare(loginDto.password, user.password))) {
       throw new UnauthorizedException('Invalid Credentials');
     }
+
+    // Remove password before returning
+    const { password, ...userWithoutPassword } = user;
 
     const payload = { email: user.email, sub: user.id, role: user.role };
 
     return {
       accessToken: this.jwtService.sign(payload),
-      user,
+      user: userWithoutPassword,
     };
   }
-
   async getProfile(userId: string): Promise<User> {
-    const user = await this.userRepsository.findOne({ where: { id: userId } });
+    const user = await this.userRepository.findOne({ where: { id: userId } });
 
     if (!user) {
       throw new UnauthorizedException('User not found');

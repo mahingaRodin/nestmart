@@ -8,7 +8,6 @@ import {
 } from 'class-validator';
 import { UserRole } from '../../../database/entities/user.entity';
 
-
 export class RegisterDto {
   @IsEmail()
   @IsNotEmpty()
@@ -25,14 +24,13 @@ export class RegisterDto {
 
   @IsString()
   @IsNotEmpty()
-    lastName: string;
-    
-    @IsString()
-    @IsOptional()
-    phone?: string;
+  lastName: string;
 
-    @IsEnum(UserRole)
-    @IsOptional()
-    role?: UserRole;
+  @IsString()
+  @IsOptional()
+  phone?: string;
 
+  @IsEnum(UserRole)
+  @IsOptional()
+  role?: UserRole;
 }
