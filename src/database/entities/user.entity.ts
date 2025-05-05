@@ -1,13 +1,10 @@
 import {
-  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import * as bcrypt from 'bcryptjs';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -50,12 +47,4 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @BeforeInsert()
-  async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
-  async validatePassword(password: string) {
-    return bcrypt.compare(password, this.password);
-  }
 }
