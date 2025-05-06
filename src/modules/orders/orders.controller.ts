@@ -40,7 +40,7 @@ export class OrdersController {
     @Roles(UserRole.ADMIN)
     async updateOrderStatus(
         @Param('id') id: string, 
-        @Param('status') status: OrderStatus,
+        @Body('status') status: OrderStatus,
     ) {
         return this.ordersService.updateOrderStatus(id, status);
     }
