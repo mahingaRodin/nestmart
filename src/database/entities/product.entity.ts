@@ -7,8 +7,10 @@ import {
   UpdateDateColumn,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 import { Category } from './category.entity';
+import { Review } from "./review.entity";
 
 @Entity('products')
 export class Product {
@@ -53,6 +55,9 @@ export class Product {
   })
   @JoinTable()
   categories: Category[];
+
+  @OneToMany(() => Review, (review) => review.product, { cascade: true })
+  reviews: Review[];
 
   @CreateDateColumn()
   createdAt: Date;
