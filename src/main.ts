@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,7 +14,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
       transform: true,
     }),
-  ); 
+  );
 
   // Set up Swagger
   const config = new DocumentBuilder()
@@ -27,6 +28,8 @@ async function bootstrap() {
 
   // Global prefix for all routes
   app.setGlobalPrefix('api');
+  //webhook initialized
+  app.use('/api/payment/webhook', bodyParser.raw({ type: 'application/json' }));
 
   await app.listen(3000);
   console.log(`Application is running on: ${await app.getUrl()}`);

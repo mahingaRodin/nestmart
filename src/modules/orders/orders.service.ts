@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order, OrderStatus } from '../../database/entities/order.entity';
@@ -38,7 +42,7 @@ export class OrdersService {
       const orderItem = this.orderItemRepo.create({
         product,
         quantity: item.quantity,
-        price: product.price, 
+        price: product.price,
       });
       orderItems.push(orderItem);
       total += product.price * item.quantity;
@@ -71,12 +75,23 @@ export class OrdersService {
   // Admin: get all orders
   async getAllOrders(): Promise<Order[]> {
     return this.orderRepo.find({ order: { createdAt: 'DESC' } });
-    }
-    
-    async updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order> {
-        const order = await this.orderRepo.findOne({ where: { id: orderId } })
-        if (!order) throw new NotFoundException('Order not found');
-        order.status = status;
-        return this.orderRepo.save(order);
-    }
+  }
+
+  async updateOrderStatus(
+    orderId: string,
+    status: OrderStatus,
+  ): Promise<Order> {
+    const order = await this.orderRepo.findOne({ where: { id: orderId } });
+    if (!order) throw new NotFoundException('Order not found');
+    order.status = status;
+    return this.orderRepo.save(order);
+  }
+
+  async findOrderById(orderId: string): Promise<Order | null> {
+    return this.orderRepo.findOne({ where: { id: orderId } });
+  }
+
+  async saveOrder(order: Order): Promise<Order> {
+    return this.orderRepo.save(order);
+  }
 }
