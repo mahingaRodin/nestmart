@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Address } from "./address.entity";
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -38,6 +40,9 @@ export class User {
     default: UserRole.CUSTOMER,
   })
   role: UserRole;
+
+  @OneToMany(() => Address, (address) => address.user, { cascade: true })
+  addresses: Address[];
 
   @Column({ default: true })
   isActive: boolean;
