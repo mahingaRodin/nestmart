@@ -1,17 +1,17 @@
 // src/modules/address/address.controller.ts
 import {
-  Controller,
-  Post,
-  Get,
-  Patch,
-  Delete,
   Body,
+  Controller,
+  Delete,
+  Get,
   Param,
-  UseGuards,
+  Patch,
+  Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
-import { AddressService } from './address.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { AddressService } from './address.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 
